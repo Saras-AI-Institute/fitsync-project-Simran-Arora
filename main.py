@@ -1,15 +1,10 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from modules.theme import apply_theme, render_theme_toggle
 from modules.processor import process_data
 
 # Set page config
 st.set_page_config(layout="wide", page_title="FitSync")
-
-# Apply the theme and render toggle
-apply_theme()
-render_theme_toggle()
 
 # Custom CSS for fonts, spacing, border-radius, etc.
 st.markdown("""

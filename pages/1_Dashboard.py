@@ -1,106 +1,88 @@
+from ast import main
+
 import streamlit as st
 from modules.processor import process_data
-from modules.theme import apply_theme, render_theme_toggle
 import pandas as pd
 import plotly.express as px
 
-# Set page config first
-st.set_page_config(layout="wide", page_title="Dashboard")
+st.set_page_config(layout="wide", page_title="FitSync")
 
-# Apply the theme and render toggle
-apply_theme()
-render_theme_toggle()
-# Title for the dashboard
-st.title("FitSynch - Personal Health Analytics")
+# Title of the dashboard
+st.title("FitSync - Personal Health Analytics")
 
-# Load and process the data
-# This will retrieve the final processed DataFrame
-processed_data = process_data()
+# Function to create plots
+def create_plotly_charts(filtered_data):
+    col1, col2 = st.columns(2)
 
-# Add a sidebar for time filtering
-st.sidebar.header("Filters")
-time_range = st.sidebar.selectbox(
-    "Select Time Range",
-    options=["Last 7 Days", "Last 30 Days", "All Time"],
-    index=2
-)
+    # Dual Line Chart: Recovery Score & Sleep Trend
+    fig1 = px.line(filtered_data, x='Date', y=['Recovery_Score', 'Sleep_Hours'], title='Recovery Score & Sleep Trend')
+    col1.plotly_chart(fig1, use_container_width=True)
 
-# Filter data based on the selected time range
-def filter_data_by_time(data, time_range):
-    if 'Date' in data.columns:
-        max_date = data['Date'].max()
-        if time_range == "Last 7 Days":
-            min_date = max_date - pd.Timedelta(days=7)
-            return data[data['Date'] >= min_date]
-        elif time_range == "Last 30 Days":
-            min_date = max_date - pd.Timedelta(days=30)
-            return data[data['Date'] >= min_date]
-    return data  # For "All Time"
+    # Scatter Plot: Recovery Score vs Daily Steps
+    fig2 = px.scatter(filtered_data, x='Steps', y='Recovery_Score', color='Sleep_Hours',
+                      title='Recovery Score vs Daily Steps')
+    col2.plotly_chart(fig2, use_container_width=True)
 
-# Filter the data based on the sidebar selection
-filtered_data = filter_data_by_time(processed_data, time_range)
+    col1, col2 = st.columns(2)
 
-# Calculate and display metrics from the filtered data
-st.write("### Key Metrics")
-col1, col2, col3 = st.columns(3)
-col1.metric(label="Average Steps", value=f"{filtered_data['Steps'].mean():.0f}")
-col2.metric(label="Average Sleep Hours", value=f"{filtered_data['Sleep_Hours'].mean():.1f}")
-col3.metric(label="Average Recovery Score", value=f"{filtered_data['Recovery_Score'].mean():.1f}")
+    # Scatter Plot: Recovery Score vs Resting Heart Rate
+    fig3 = px.scatter(filtered_data, x='Heart_Rate_bpm', y='Recovery_Score',
+                      title='Recovery Score vs Resting Heart Rate')
+    col1.plotly_chart(fig3, use_container_width=True)
 
-# Visualization - Dual Line Chart
-st.write("### Trends & Insights")
-line_col1, line_col2 = st.columns(2)
-with line_col1:
-    st.write("#### Recovery Score & Sleep Trend")
-    recovery_sleep_fig = px.line(
-        filtered_data,
-        x='Date',
-        y=['Recovery_Score', 'Sleep_Hours'],
-        title='Recovery Score & Sleep Trend',
-        labels={'value': 'Value', 'variable': 'Metric'}
+    # Line Chart: Daily Calories Burned Trend
+    fig4 = px.line(filtered_data, x='Date', y='Calories_Burned', title='Daily Calories Burned Trend')
+    col2.plotly_chart(fig4, use_container_width=True)
+
+# Cache the data processing function
+@st.cache_data
+def load_data():
+    return process_data()
+
+def main():
+    st.write("Welcome to FitSync! This dashboard provides insights into your health and recovery based on your activity data.")
+
+    # Sidebar filter for time range selection
+    st.sidebar.header("Filters")
+    time_range = st.sidebar.selectbox(
+        "Select Time Range",
+        options=["Last 7 Days", "Last 30 Days", "All Time"],
+        index=2
     )
-    st.plotly_chart(recovery_sleep_fig)
 
-with line_col2:
-    st.write("#### Recovery Score vs Daily Steps")
-    scatter_fig_steps = px.scatter(
-        filtered_data,
-        x='Steps',
-        y='Recovery_Score',
-        color='Sleep_Hours',
-        title='Recovery Score vs Daily Steps',
-        labels={'x': 'Daily Steps', 'y': 'Recovery Score', 'color': 'Sleep Hours'}
-    )
-    st.plotly_chart(scatter_fig_steps)
+    # Load and filter data based on the selected time range
+    data = load_data()  # Use cached data
+    if time_range == "Last 7 Days":
+        filtered_data = data[data['Date'] >= (data['Date'].max() - pd.Timedelta(days=7))]
+    elif time_range == "Last 30 Days":
+        filtered_data = data[data['Date'] >= (data['Date'].max() - pd.Timedelta(days=30))]
+    else:
+        filtered_data = data
 
-# Visualization - Additional Scatter and Line Charts
-scatter_col1, scatter_col2 = st.columns(2)
-with scatter_col1:
-    st.write("#### Recovery Score vs Resting Heart Rate")
-    scatter_fig_hr = px.scatter(
-        filtered_data,
-        x='Heart_Rate_bpm',
-        y='Recovery_Score',
-        title='Recovery Score vs Resting Heart Rate',
-        labels={'x': 'Heart Rate (bpm)', 'y': 'Recovery Score'}
-    )
-    st.plotly_chart(scatter_fig_hr)
+    # Set up a professional 3-column layout
+    col1, col2, col3 = st.columns(3)
 
-with scatter_col2:
-    st.write("#### Daily Calories Burned Trend")
-    calories_fig = px.line(
-        filtered_data,
-        x='Date',
-        y='Calories_Burned',
-        title='Daily Calories Burned Trend',
-        labels={'x': 'Date', 'y': 'Calories Burned'}
-    )
-    st.plotly_chart(calories_fig)
+    # Calculate metrics using the filtered DataFrame
+    average_steps = filtered_data['Steps'].mean()
+    average_sleep = filtered_data['Sleep_Hours'].mean()
+    average_recovery = filtered_data['Recovery_Score'].mean()
 
-# Display the data in a table format
-st.write("### Processed Health Data")
-st.dataframe(processed_data)
+    # Display metrics using st.metric
+    with col1:
+        st.metric(label="Average Steps", value=f"{average_steps:.0f}", delta=None)
+    with col2:
+        st.metric(label="Average Sleep Hours", value=f"{average_sleep:.1f}", delta=None)
+    with col3:
+        st.metric(label="Average Recovery Score", value=f"{average_recovery:.1f}", delta=None)
 
-# Additional features or sections can be added below to enhance the dashboard
-# For example, visualizations, user inputs, analytics summaries, etc.
+    # Visualization
+    create_plotly_charts(filtered_data)
 
+# Display processed data
+# st.dataframe(data)
+
+# Additional features and visualizations can be added here
+
+# Run the main function to execute the dashboard
+if __name__ == "__main__":
+    main()
