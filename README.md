@@ -1,101 +1,93 @@
-# FitSync - Health Analytics Platform 🚴‍♂️
+# FitSync Pro
 
-### Empowering Your Health Insights with Real-Time Data
-
----
-
-## Overview
-FitSync is a sophisticated health analytics platform designed to provide individuals with a comprehensive view of their personal health metrics. This 3-page dashboard application, developed using Python and Streamlit, combines real-time data visualization with historical trend analysis to empower users with actionable health insights.
+A modern fitness and wellness analytics dashboard built with Streamlit.
 
 ---
 
-## Features
-- **Main Page**: Overview of health data and quick insights.
-- **Dashboard**:
-  - Utilizes Plotly Express for interactive visualizations.
-  - Real-time heart rate distribution, daily steps, and calorie trends.
-- **Trends Page**:
-  - Detailed histograms provide insights into historical health patterns.
-  - Insights feature aids in understanding long-term health trends.
+## What it does
+FitSync Pro turns your health data into clear, premium insights.
+
+- Track recovery, sleep, steps, and calories in one place.
+- Explore performance trends with polished charts.
+- Understand daily rhythm, readiness, and recovery at a glance.
 
 ---
 
-## Project Structure
+## How to use it
+1. Install dependencies.
+2. Run `main.py` with Streamlit.
+3. Use the sidebar to switch between the dashboard and trends pages.
+4. Explore metrics, charts, and personalized performance signals.
 
-```
-fitsync-project-template/
-├── app.py                      # Main Streamlit application entry point
-├── requirements.txt            # Python dependencies
-├── README.md                   # Project documentation
+---
+
+## Project structure
+
+```text
+fitSync-project-Simran-Arora/
+├── main.py                    # Main Streamlit entry point
+├── README.md                  # Project documentation
+├── requirements.txt           # Python dependencies
+├── generatedata.py            # Sample data generation helper
+├── sample_data.py             # Example data utilities
+├── test.py                    # Test script
+├── test1.py                   # Additional test script
 ├── data/
-│   └── health_data.csv        # Sample health metrics dataset
-├── pages/
-│   ├── dashboard.py           # Dashboard page with visualizations
-│   ├── trends.py              # Trends analysis page
-│   └── insights.py            # Health insights page
-└── utils/
-    ├── data_loader.py         # Data loading utilities
-    └── visualizations.py      # Plotting and visualization functions
+│   └── health_data.csv        # Sample health dataset
+├── modules/
+│   └── processor.py           # Data processing logic
+└── pages/
+    ├── 1_Dashboard.py         # Main dashboard page
+    └── 2_Trends.py            # Trends and analytics page
 ```
 
 ---
 
 ## Installation
 
-### Prerequisites
-- Python 3.8 or higher
-- pip package manager
+### Requirements
+- Python 3.8+
+- `pip`
 
 ### Setup
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/rajatvirpandhi01-design/fitsync-project-template.git
-   cd fitsync-project-template
-   ```
-
-2. **Create a virtual environment**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-
-3. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
-
----
-
-## Usage
-
-Run the Streamlit application:
-
 ```bash
-streamlit run app.py
+git clone https://github.com/Saras-AI-Institute/fitsync-project-Simran-Arora.git
+cd fitsync-project-Simran-Arora
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-The application will open in your default browser at `http://localhost:8501`
+---
+
+## Run the app
+
+```bash
+streamlit run main.py
+```
+
+Open the local URL shown in the terminal to view the dashboard.
 
 ---
 
-## Technologies Used
-- **Frontend**: Streamlit
-- **Visualization**: Plotly Express
-- **Data Processing**: Pandas, NumPy
-- **Backend**: Python
+## Key pages
+- `main.py`: entry point with the core fitness dashboard experience.
+- `pages/1_Dashboard.py`: home-style metrics and insights layout.
+- `pages/2_Trends.py`: premium analytics view with trend charts and distributions.
+
+---
+
+## Notes
+- Data is sourced from `data/health_data.csv`.
+- `modules/processor.py` contains the data normalization and processing logic.
 
 ---
 
 ## Contributing
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome. Open an issue or submit a pull request with improvements.
 
 ---
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
----
-
-## Support
-For issues, questions, or suggestions, please open an issue on GitHub.
+This project is provided as-is. Check the repository for licensing details.
