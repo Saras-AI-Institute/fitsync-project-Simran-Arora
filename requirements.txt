@@ -3,3 +3,5 @@ numpy
 pytest
 streamlit
 plotly
+statsmodels
+matplotlib

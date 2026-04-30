@@ -15,21 +15,21 @@ def load_data():
     
     # Step 2: Handle missing values intelligently
     # Fill missing 'Steps' with median value
-    data['Steps'].fillna(data['Steps'].median(), inplace=True)
-    
+    data['Steps'] = data['Steps'].fillna(data['Steps'].median())
+
     # Fill missing 'Sleep_Hours' with 7.0 (general optimal sleep hours)
-    data['Sleep_Hours'].fillna(7.0, inplace=True)
-    
+    data['Sleep_Hours'] = data['Sleep_Hours'].fillna(7.0)
+
     # Fill missing 'Heart_Rate_bpm' with 68 (average human resting heart rate)
-    data['Heart_Rate_bpm'].fillna(68.0, inplace=True)
-    
-    # Fill other columns with their median values
-    for column in data.columns:
+    data['Heart_Rate_bpm'] = data['Heart_Rate_bpm'].fillna(68.0)
+
+    # Fill other numeric columns with their median values
+    for column in data.select_dtypes(include='number').columns:
         if data[column].isnull().any():
-            data[column].fillna(data[column].median(), inplace=True)
+            data[column] = data[column].fillna(data[column].median())
 
     # Step 3: Convert the 'Date' column to datetime objects
-    data['Date'] = pd.to_datetime(data['Date'], format='%Y-%m-%d')
+    data['Date'] = pd.to_datetime(data['Date'], format='%Y-%m-%d', errors='coerce')
 
     # Returns the cleaned DataFrame
     return data
